@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.rs rust
+*.md markdown
+*.toml toml
