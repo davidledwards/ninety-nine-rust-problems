@@ -28,6 +28,15 @@ fn find_length<'a, T>(v: &'a [T]) -> usize {
     v.iter().fold(0, |a, _| a + 1)
 }
 
+// P05: reverse a list.
+fn reverse<'a, T>(v: &'a [T]) -> Vec<&'a T> {
+    v.iter().fold(Vec::with_capacity(v.len()),
+        |mut a, e| {
+            a.insert(0, e);
+            a
+        })
+}
+
 const V_EMPTY: &[i32] = &[];
 const V_SINGLE: &[i32] = &[7];
 const V_DOUBLE: &[i32] = &[12, 3];
@@ -66,5 +75,15 @@ fn main() {
     let r = find_length(V_DOUBLE);
     println!("{:?} -> {:?}", V_DOUBLE, r);
     let r = find_length(V_LONG);
+    println!("{:?} -> {:?}", V_LONG, r);
+
+    println!("--- P05 ---");
+    let r = reverse(V_EMPTY);
+    println!("{:?} -> {:?}", V_EMPTY, r);
+    let r = reverse(V_SINGLE);
+    println!("{:?} -> {:?}", V_SINGLE, r);
+    let r = reverse(V_DOUBLE);
+    println!("{:?} -> {:?}", V_DOUBLE, r);
+    let r = reverse(V_LONG);
     println!("{:?} -> {:?}", V_LONG, r);
 }
