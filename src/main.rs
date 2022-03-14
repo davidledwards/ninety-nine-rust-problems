@@ -24,7 +24,7 @@ fn find_kth<'a, T>(v: &'a [T], k: usize) -> Option<&'a T> {
 }
 
 // P04: find number of elements in a list.
-fn find_length<'a, T>(v: &'a [T]) -> usize {
+fn find_length<T>(v: &[T]) -> usize {
     v.iter().fold(0, |a, _| a + 1)
 }
 
