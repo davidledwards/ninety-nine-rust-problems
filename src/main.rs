@@ -1,26 +1,21 @@
-use std::slice::Iter;
-
 // P01: find the last element of a list.
-fn find_last<'a, T>(v: &'a [T]) -> Option<&'a T> {
+fn find_last<T>(v: &[T]) -> Option<&T> {
     v.iter().reduce(|_, e| e)
 }
 
 // P02: find next to last element of a list.
-fn find_next_to_last<'a, T>(v: &'a [T]) -> Option<&'a T> {
+fn find_next_to_last<T>(v: &[T]) -> Option<&T> {
     let (r, _) = v.iter().fold((None, None), |a, e| (a.1, Some(e)));
     r
 }
 
 // P03: find k-th element of a list.
-fn find_kth<'a, T>(v: &'a [T], k: usize) -> Option<&'a T> {
-    fn find<'a, T>(mut it: Iter<'a, T>, n: usize) -> Option<&'a T> {
-        match (it.next(), n) {
-            (None, _) => None,
-            (r, 0) => r,
-            _ => find(it, n - 1),
-        }
+fn find_kth<T>(v: &[T], k: usize) -> Option<&T> {
+    let mut it = v.iter();
+    for _ in 0..k {
+        it.next()?;
     }
-    find(v.iter(), k)
+    it.next()
 }
 
 // P04: find number of elements in a list.
@@ -29,11 +24,26 @@ fn find_length<T>(v: &[T]) -> usize {
 }
 
 // P05: reverse a list.
-fn reverse<'a, T>(v: &'a [T]) -> Vec<&'a T> {
-    v.iter().fold(Vec::with_capacity(v.len()),
-        |mut a, e| {
-            a.insert(0, e);
-            a
+fn reverse<T>(v: &[T]) -> Vec<&T> {
+    v.iter().rev().fold(Vec::with_capacity(v.len()),
+        |mut r, e| {
+            r.push(e);
+            r
+        })
+}
+
+// P06: determine if list is a palindrome.
+fn is_palindrome<T: Ord>(v: &[T]) -> bool {
+    let n = v.len();
+    (0..n / 2).fold(true, |r, i| r && (v[i] == v[n - i - 1]))
+}
+
+// P07: flatten a nested list.
+fn flatten<'a, T>(v: &'a [&[T]]) -> Vec<&'a T> {
+    v.iter().fold(Vec::new(),
+        |mut r, e| {
+            e.iter().for_each(|e| r.push(e));
+            r
         })
 }
 
@@ -41,6 +51,8 @@ const V_EMPTY: &[i32] = &[];
 const V_SINGLE: &[i32] = &[7];
 const V_DOUBLE: &[i32] = &[12, 3];
 const V_LONG: &[i32] = &[32, 17, 23, 9, 14, 6, 27, 18, 2];
+const V_PALINDROME: &[char] = &['d', 'e', 'a', 'd', 'b', 'e', 'b', 'd', 'a', 'e', 'd'];
+const V_NESTED: &[&[i32]] = &[&[3, 7, 19], &[9, 4], &[81, 34, 16, 56], &[0]];
 
 fn main() {
     println!("--- P01 ---");
@@ -86,4 +98,18 @@ fn main() {
     println!("{:?} -> {:?}", V_DOUBLE, r);
     let r = reverse(V_LONG);
     println!("{:?} -> {:?}", V_LONG, r);
+
+    println!("--- P06 ---");
+    let r = is_palindrome(V_EMPTY);
+    println!("{:?} -> {:?}", V_EMPTY, r);
+    let r = is_palindrome(V_SINGLE);
+    println!("{:?} -> {:?}", V_SINGLE, r);
+    let r = is_palindrome(V_LONG);
+    println!("{:?} -> {:?}", V_LONG, r);
+    let r = is_palindrome(V_PALINDROME);
+    println!("{:?} -> {:?}", V_PALINDROME, r);
+
+    println!("--- P07 ---");
+    let r = flatten(V_NESTED);
+    println!("{:?} -> {:?}", V_NESTED, r);
 }
