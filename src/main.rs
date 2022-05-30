@@ -11,11 +11,7 @@ fn find_next_to_last<T>(v: &[T]) -> Option<&T> {
 
 // P03: find k-th element of a list.
 fn find_kth<T>(v: &[T], k: usize) -> Option<&T> {
-    let mut it = v.iter();
-    for _ in 0..k {
-        it.next()?;
-    }
-    it.next()
+    v.get(k)
 }
 
 // P04: find number of elements in a list.
@@ -63,8 +59,7 @@ fn compress<T: Ord>(v: &[T]) -> Vec<&T> {
 
 // P09: pack consecutive duplicates of list elements into sublists.
 fn pack<T: Ord>(v: &[T]) -> Vec<Vec<&T>> {
-    let r: Vec<Vec<&T>> = Vec::new();
-    let (r, _) = v.iter().fold((r, None),
+    let (r, _) = v.iter().fold((Vec::<Vec<&T>>::new(), None),
         |(mut r, p), e| match p {
             Some(v) if v == e => {
                 r.last_mut().unwrap().push(e);
@@ -76,6 +71,11 @@ fn pack<T: Ord>(v: &[T]) -> Vec<Vec<&T>> {
             }
         });
     r
+}
+
+// P10: use P09 to run-length encode list of elements.
+fn encode<T: Ord>(v: &[T]) -> Vec<(usize, &T)> {
+    pack(v).iter().map(|e| (e.len(), e[0])).collect()
 }
 
 const V_EMPTY: &[i32] = &[];
@@ -159,5 +159,13 @@ fn main() {
     let r = pack(V_DOUBLE);
     println!("{:?} -> {:?}", V_DOUBLE, r);
     let r = pack(V_DUPS);
+    println!("{:?} -> {:?}", V_DUPS, r);
+
+    println!("--- P10 ---");
+    let r = encode(V_EMPTY);
+    println!("{:?} -> {:?}", V_EMPTY, r);
+    let r = encode(V_DOUBLE);
+    println!("{:?} -> {:?}", V_DOUBLE, r);
+    let r = encode(V_DUPS);
     println!("{:?} -> {:?}", V_DUPS, r);
 }
