@@ -39,12 +39,43 @@ fn is_palindrome<T: Ord>(v: &[T]) -> bool {
 }
 
 // P07: flatten a nested list.
-fn flatten<'a, T>(v: &'a [&[T]]) -> Vec<&'a T> {
+fn flatten<'a, T>(v: &[&'a [T]]) -> Vec<&'a T> {
     v.iter().fold(Vec::new(),
         |mut r, e| {
             e.iter().for_each(|e| r.push(e));
             r
         })
+}
+
+// P08: eliminate consecutive duplicates of list elements.
+fn compress<T: Ord>(v: &[T]) -> Vec<&T> {
+    let (r, _) = v.iter().fold((Vec::new(), None),
+        |(mut r, p), e| match p {
+            Some(v) if v == e =>
+                (r, p),
+            _ => {
+                r.push(e);
+                (r, Some(e))
+            }
+        });
+    r
+}
+
+// P09: pack consecutive duplicates of list elements into sublists.
+fn pack<T: Ord>(v: &[T]) -> Vec<Vec<&T>> {
+    let r: Vec<Vec<&T>> = Vec::new();
+    let (r, _) = v.iter().fold((r, None),
+        |(mut r, p), e| match p {
+            Some(v) if v == e => {
+                r.last_mut().unwrap().push(e);
+                (r, p)
+            }
+            _ => {
+                r.push(vec![e]);
+                (r, Some(e))
+            }
+        });
+    r
 }
 
 const V_EMPTY: &[i32] = &[];
@@ -53,6 +84,7 @@ const V_DOUBLE: &[i32] = &[12, 3];
 const V_LONG: &[i32] = &[32, 17, 23, 9, 14, 6, 27, 18, 2];
 const V_PALINDROME: &[char] = &['d', 'e', 'a', 'd', 'b', 'e', 'b', 'd', 'a', 'e', 'd'];
 const V_NESTED: &[&[i32]] = &[&[3, 7, 19], &[9, 4], &[81, 34, 16, 56], &[0]];
+const V_DUPS: &[i32] = &[1, 2, 2, 3, 4, 4, 4, 5, 5, 5, 6, 7, 8, 8, 8, 8, 9, 9, 10];
 
 fn main() {
     println!("--- P01 ---");
@@ -112,4 +144,20 @@ fn main() {
     println!("--- P07 ---");
     let r = flatten(V_NESTED);
     println!("{:?} -> {:?}", V_NESTED, r);
+
+    println!("--- P08 ---");
+    let r = compress(V_EMPTY);
+    println!("{:?} -> {:?}", V_EMPTY, r);
+    let r = compress(V_SINGLE);
+    println!("{:?} -> {:?}", V_SINGLE, r);
+    let r = compress(V_DUPS);
+    println!("{:?} -> {:?}", V_DUPS, r);
+
+    println!("--- P09 ---");
+    let r = pack(V_EMPTY);
+    println!("{:?} -> {:?}", V_EMPTY, r);
+    let r = pack(V_DOUBLE);
+    println!("{:?} -> {:?}", V_DOUBLE, r);
+    let r = pack(V_DUPS);
+    println!("{:?} -> {:?}", V_DUPS, r);
 }
