@@ -78,13 +78,73 @@ fn encode<T: Ord>(v: &[T]) -> Vec<(usize, &T)> {
     pack(v).iter().map(|e| (e.len(), e[0])).collect()
 }
 
+// P12: decode a run-length encoded list.
+fn decode<T>(v: &[(usize, T)]) -> Vec<&T> {
+    v.iter().fold(Vec::new(),
+        |mut r, (n, e)| {
+            (0..*n).for_each(|_| r.push(e));
+            r
+        })
+}
+
+// P14: duplicate elements of a list.
+fn duplicate<T>(v: &[T]) -> Vec<&T> {
+    v.iter().fold(Vec::new(),
+        |mut r, e| {
+            r.push(e);
+            r.push(e);
+            r
+        })
+}
+
+// P15: duplicate elements of a list a given number of times.
+fn duplicate_times<T>(v: &[T], n: usize) -> Vec<&T> {
+    v.iter().fold(Vec::new(),
+        |mut r, e| {
+            (0..n).for_each(|_| r.push(e));
+            r
+        })
+}
+
+// P16: drop every n-th element of a list.
+fn drop_nth<T>(v: &[T], n: usize) -> Vec<&T> {
+    let (r, _) = v.iter().fold((Vec::new(), n),
+        |(mut r, k), e| {
+            if k == 1 {
+                (r, n)
+            } else {
+                r.push(e);
+                (r, k - 1)
+            }
+        });
+    r
+}
+
+// P17: split a list into two parts.
+fn split<T>(v: &[T], n: usize) -> (Vec<&T>, Vec<&T>) {
+    let (a, b, _) = v.iter().fold((Vec::new(), Vec::new(), n),
+        |(mut a, mut b, k), e| {
+            let j = if k > 0 {
+                a.push(e);
+                k - 1
+            } else {
+                b.push(e);
+                0
+            };
+            (a, b, j)
+        });
+    (a, b)
+}
+
 const V_EMPTY: &[i32] = &[];
 const V_SINGLE: &[i32] = &[7];
 const V_DOUBLE: &[i32] = &[12, 3];
 const V_LONG: &[i32] = &[32, 17, 23, 9, 14, 6, 27, 18, 2];
 const V_PALINDROME: &[char] = &['d', 'e', 'a', 'd', 'b', 'e', 'b', 'd', 'a', 'e', 'd'];
+const V_ORDERED: &[i32] = &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 const V_NESTED: &[&[i32]] = &[&[3, 7, 19], &[9, 4], &[81, 34, 16, 56], &[0]];
-const V_DUPS: &[i32] = &[1, 2, 2, 3, 4, 4, 4, 5, 5, 5, 6, 7, 8, 8, 8, 8, 9, 9, 10];
+const V_DUPS: &[char] = &['a', 'b', 'b', 'c', 'd', 'd', 'd', 'e', 'e', 'e',
+                         'f', 'g', 'h', 'h', 'h', 'h', 'i', 'i', 'j'];
 
 fn main() {
     println!("--- P01 ---");
@@ -168,4 +228,47 @@ fn main() {
     println!("{:?} -> {:?}", V_DOUBLE, r);
     let r = encode(V_DUPS);
     println!("{:?} -> {:?}", V_DUPS, r);
+
+    println!("--- P12 ---");
+    let v = encode(V_DUPS);
+    let r = decode(&v);
+    println!("{:?} -> {:?}", v, r);
+
+    println!("--- P14 ---");
+    let r = duplicate(V_EMPTY);
+    println!("{:?} -> {:?}", V_EMPTY, r);
+    let r = duplicate(V_PALINDROME);
+    println!("{:?} -> {:?}", V_PALINDROME, r);
+
+    println!("--- P15 ---");
+    let r = duplicate_times(V_EMPTY, 3);
+    println!("{:?} -> {:?}", V_EMPTY, r);
+    let r = duplicate_times(V_SINGLE, 3);
+    println!("{:?} -> {:?}", V_SINGLE, r);
+    let r = duplicate_times(V_PALINDROME, 3);
+    println!("{:?} -> {:?}", V_PALINDROME, r);
+
+    println!("--- P16 ---");
+    let r = drop_nth(V_EMPTY, 1);
+    println!("{:?} -> {:?}", V_EMPTY, r);
+    let r = drop_nth(V_SINGLE, 1);
+    println!("{:?} -> {:?}", V_SINGLE, r);
+    let r = drop_nth(V_SINGLE, 2);
+    println!("{:?} -> {:?}", V_SINGLE, r);
+    let r = drop_nth(V_ORDERED, 2);
+    println!("{:?} -> {:?}", V_ORDERED, r);
+    let r = drop_nth(V_ORDERED, 3);
+    println!("{:?} -> {:?}", V_ORDERED, r);
+    let r = drop_nth(V_ORDERED, 1);
+    println!("{:?} -> {:?}", V_ORDERED, r);
+
+    println!("--- P17 ---");
+    let r = split(V_EMPTY, 1);
+    println!("{:?} -> {:?}", V_EMPTY, r);
+    let r = split(V_SINGLE, 1);
+    println!("{:?} -> {:?}", V_SINGLE, r);
+    let r = split(V_DOUBLE, 1);
+    println!("{:?} -> {:?}", V_DOUBLE, r);
+    let r = split(V_ORDERED, 7);
+    println!("{:?} -> {:?}", V_ORDERED, r);
 }
