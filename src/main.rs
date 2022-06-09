@@ -136,6 +136,17 @@ fn split<T>(v: &[T], n: usize) -> (Vec<&T>, Vec<&T>) {
     (a, b)
 }
 
+// P18: extract a slice from from a list.
+fn slice<T>(v: &[T], i: usize, j: usize) -> &[T] {
+    let n = v.len();
+    if i < n {
+        let k = if j > n { n } else { j };
+        &v[i..k]
+    } else {
+        &[]
+    }
+}
+
 const V_EMPTY: &[i32] = &[];
 const V_SINGLE: &[i32] = &[7];
 const V_DOUBLE: &[i32] = &[12, 3];
@@ -271,4 +282,14 @@ fn main() {
     println!("{:?} -> {:?}", V_DOUBLE, r);
     let r = split(V_ORDERED, 7);
     println!("{:?} -> {:?}", V_ORDERED, r);
+
+    println!("--- P18 ---");
+    let r = slice(V_EMPTY, 0, 1);
+    println!("{:?} -> {:?}", V_EMPTY, r);
+    let r = slice(V_LONG, 2, 5);
+    println!("{:?} -> {:?}", V_LONG, r);
+    let r = slice(V_LONG, 2, V_LONG.len());
+    println!("{:?} -> {:?}", V_LONG, r);
+    let r = slice(V_LONG, 2, V_LONG.len() + 1);
+    println!("{:?} -> {:?}", V_LONG, r);
 }
