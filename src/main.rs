@@ -147,6 +147,23 @@ fn slice<T>(v: &[T], i: usize, j: usize) -> &[T] {
     }
 }
 
+// P19: rotate a list left by a given number of places.
+fn rotate<T>(v: &[T], n: usize) -> Vec<&T> {
+    let (mut r, ref mut t, _) = v.iter().fold((Vec::new(), Vec::new(), n),
+        |(mut r, mut t, k), e| {
+            let j = if k > 0 {
+                t.push(e);
+                k - 1
+            } else {
+                r.push(e);
+                k
+            };
+            (r, t, j)
+        });
+    r.append(t);
+    r
+}
+
 const V_EMPTY: &[i32] = &[];
 const V_SINGLE: &[i32] = &[7];
 const V_DOUBLE: &[i32] = &[12, 3];
@@ -292,4 +309,14 @@ fn main() {
     println!("{:?} -> {:?}", V_LONG, r);
     let r = slice(V_LONG, 2, V_LONG.len() + 1);
     println!("{:?} -> {:?}", V_LONG, r);
+
+    println!("--- P19 ---");
+    let r = rotate(V_EMPTY, 1);
+    println!("{:?} -> {:?}", V_EMPTY, r);
+    let r = rotate(V_LONG, 0);
+    println!("{:?} -> {:?}", V_LONG, r);
+    let r = rotate(V_LONG, 3);
+    println!("{:?} -> {:?}", V_LONG, r);
+    let r = rotate(V_DUPS, V_DUPS.len() / 2);
+    println!("{:?} -> {:?}", V_DUPS, r);
 }
