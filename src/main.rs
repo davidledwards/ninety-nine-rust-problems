@@ -164,6 +164,21 @@ fn rotate<T>(v: &[T], n: usize) -> Vec<&T> {
     r
 }
 
+// P20: remoove k-th element from a list and return as a tuple.
+fn remove_kth<T>(v: &[T], k: usize) -> (Vec<&T>, Option<&T>) {
+    let (r, s, _) = v.iter().fold((Vec::new(), None, 0),
+        |(mut r, s, j), e| {
+            let _s = if j == k {
+                Some(e)
+            } else {
+                r.push(e);
+                s
+            };
+            (r, _s, j + 1)
+        });
+    (r, s)
+}
+
 const V_EMPTY: &[i32] = &[];
 const V_SINGLE: &[i32] = &[7];
 const V_DOUBLE: &[i32] = &[12, 3];
@@ -319,4 +334,12 @@ fn main() {
     println!("{:?} -> {:?}", V_LONG, r);
     let r = rotate(V_DUPS, V_DUPS.len() / 2);
     println!("{:?} -> {:?}", V_DUPS, r);
+
+    println!("--- P20 ---");
+    let r = remove_kth(V_EMPTY, 0);
+    println!("{:?} -> {:?}", V_EMPTY, r);
+    let r = remove_kth(V_SINGLE, 0);
+    println!("{:?} -> {:?}", V_SINGLE, r);
+    let r = remove_kth(V_LONG, 3);
+    println!("{:?} -> {:?}", V_LONG, r);
 }
