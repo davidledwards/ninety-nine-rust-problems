@@ -1,3 +1,9 @@
+// Note that the implementation of each problem is not meant to be the most efficient,
+// but rather an exercise is using functional constructs of the language. As such, you
+// will see fold used quite extensively.
+
+use std::ops::ControlFlow;
+
 // P01: find the last element of a list.
 fn find_last<T>(v: &[T]) -> Option<&T> {
     v.iter().reduce(|_, e| e)
@@ -11,7 +17,19 @@ fn find_next_to_last<T>(v: &[T]) -> Option<&T> {
 
 // P03: find k-th element of a list.
 fn find_kth<T>(v: &[T], k: usize) -> Option<&T> {
-    v.get(k)
+    // This is intentionally overdone because it is designed to illustrate use of
+    // early return from fold.
+    let r = v.iter().try_fold(0, |i, e| {
+        if i == k {
+            ControlFlow::Break(e)
+        } else {
+            ControlFlow::Continue(i + 1)
+        }
+    });
+    match r {
+        ControlFlow::Break(e) => Some (e),
+        _ => None
+    }
 }
 
 // P04: find number of elements in a list.
@@ -178,6 +196,7 @@ fn remove_kth<T>(v: &[T], k: usize) -> (Vec<&T>, Option<&T>) {
         });
     (r, s)
 }
+
 
 const V_EMPTY: &[i32] = &[];
 const V_SINGLE: &[i32] = &[7];
