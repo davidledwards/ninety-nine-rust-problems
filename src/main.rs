@@ -197,6 +197,36 @@ fn remove_kth<T>(v: &[T], k: usize) -> (Vec<&T>, Option<&T>) {
     (r, s)
 }
 
+// P21: insert element at given position in a list.
+fn insert_at<'a, T>(v: &'a [T], t: &'a T, k: usize) -> Vec<&'a T> {
+    if k < v.len() {
+        let (r, _) = v.iter().fold((Vec::new(), 0), |(mut r, i), e| {
+            if i == k {
+                r.push(t)
+            }
+            r.push(e);
+            (r, i + 1)
+        });
+        r
+    } else {
+        let mut r: Vec<&'a T> = v.iter().collect();
+        r.push(t);
+        r
+    }
+}
+
+// P22: create list containing integers within a given range.
+fn range_of(begin: u32, end: u32) -> Vec<u32> {
+    let mut r = Vec::new();
+    if begin < end {
+        let mut i = begin;
+        while i < end {
+            r.push(i);
+            i += 1
+        }
+    }
+    r
+}
 
 const V_EMPTY: &[i32] = &[];
 const V_SINGLE: &[i32] = &[7];
@@ -361,4 +391,20 @@ fn main() {
     println!("{:?} -> {:?}", V_SINGLE, r);
     let r = remove_kth(V_LONG, 3);
     println!("{:?} -> {:?}", V_LONG, r);
+
+    println!("--- P21 ---");
+    let r = insert_at(V_EMPTY, &999, 0);
+    println!("{:?} -> {:?}", V_EMPTY, r);
+    let r = insert_at(V_SINGLE, &999, 1);
+    println!("{:?} -> {:?}", V_SINGLE, r);
+    let r = insert_at(V_DOUBLE, &999, 0);
+    println!("{:?} -> {:?}", V_DOUBLE, r);
+    let r = insert_at(V_LONG, &999, 5);
+    println!("{:?} -> {:?}", V_LONG, r);
+
+    println!("--- P22 ---");
+    println!("{:?}", range_of(0, 1));
+    println!("{:?}", range_of(3, 3));
+    println!("{:?}", range_of(3, 2));
+    println!("{:?}", range_of(7, 14));
 }
